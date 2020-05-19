@@ -1,0 +1,4 @@
+127.0.0.1 - - [15/May/2020:08:23:57 +0800] "GET /search/query?page=1&q=huawei HTTP/1.1" 200 3375 http-bio-8083-exec-1 381
+0:0:0:0:0:0:0:1 - - [15/May/2020:09:01:02 +0800] "GET /search/manager/importall HTTP/1.1" 200 48 http-bio-8083-exec-3 3486
+0:0:0:0:0:0:0:1 - - [15/May/2020:09:45:18 +0800] "GET /search/manager/importall HTTP/1.1" 200 48 http-bio-8083-exec-5 164
+127.0.0.1 - - [15/May/2020:09:45:28 +0800] "GET /search/query?page=1&q=huawei HTTP/1.1" 200 3683 http-bio-8083-exec-8 50

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;taotao-manage&apos; to &apos;taotao-manager&apos;" description="Rename resource &apos;taotao-manage&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/taotao-manage" name="taotao-manager" stamp="1576065149173" updateReferences="true"/>&#x0A;<refactoring comment="Delete resource &apos;taotao-manager/taotao-manager-pojo&apos;" deleteContents="false" description="Delete resource &apos;taotao-manager/taotao-manager-pojo&apos;" element1="/taotao-manager/taotao-manager-pojo" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1576065214520"/>
+</session>

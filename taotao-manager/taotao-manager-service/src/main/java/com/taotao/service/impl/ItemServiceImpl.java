@@ -1,0 +1,181 @@
+package com.taotao.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.pojo.EUDataGridResult;
+import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.common.utils.IDUtils;
+import com.taotao.common.utils.JsonUtils;
+import com.taotao.mapper.TbItemDescMapper;
+import com.taotao.mapper.TbItemMapper;
+import com.taotao.mapper.TbItemParamItemMapper;
+import com.taotao.pojo.TbItem;
+import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemDescExample;
+import com.taotao.pojo.TbItemExample;
+import com.taotao.pojo.TbItemExample.Criteria;
+import com.taotao.pojo.TbItemParamItem;
+import com.taotao.pojo.TbItemParamItemExample;
+import com.taotao.service.ItemService;
+@Service
+public class ItemServiceImpl implements ItemService {
+	
+	@Autowired
+	private TbItemMapper itemMapper;
+	@Autowired
+	private TbItemDescMapper itemDescMapper;
+	@Autowired
+	private TbItemParamItemMapper itemParamItemMapper;
+	@Override
+	public TbItem getItemById(long itemId) {
+		
+	TbItem tbItem =	itemMapper.selectByPrimaryKey(itemId);
+		return tbItem;
+	}
+
+	@Override
+	public EUDataGridResult getItemList(int page, int rows) {
+		//查询商品列表
+		TbItemExample example=new TbItemExample();
+		//分页处理
+		PageHelper.startPage(page, rows);
+		List<TbItem> list=itemMapper.selectByExample(example);
+		//创建一个返回值对象
+		EUDataGridResult result=new EUDataGridResult();
+		result.setRows(list);
+		//获取记录条数总的
+		PageInfo<TbItem> pageInfo=new PageInfo<>(list);
+		result.setTotal(pageInfo.getTotal());
+		return result;
+	}
+
+	@Override
+	public TaotaoResult createItem(TbItem item, String desc, String itemParam) throws Exception {
+		//item补全
+		//生成商品ID
+		Long itemId = IDUtils.genItemId();
+		item.setId(itemId);
+		// '商品状态，1-正常，2-下架，3-删除',
+		item.setStatus((byte) 1);
+		item.setCreated(new Date());
+		item.setUpdated(new Date());
+		//插入到数据库
+		itemMapper.insert(item);
+		//添加商品描述信息
+		TaotaoResult result = insertItemDesc(itemId, desc);
+		if (result.getStatus() != 200) {
+			throw new Exception();
+		}
+		//添加规格参数
+		result = insertItemParamItem(itemId, itemParam);
+		if (result.getStatus() != 200) {
+			throw new Exception();
+		}
+		return TaotaoResult.ok();
+	}
+	/**
+	 * 添加商品描述
+	 * <p>Title: insertItemDesc</p>
+	 * <p>Description: </p>
+	 * @param desc
+	 */
+	private TaotaoResult insertItemDesc(Long itemId, String desc) {
+		TbItemDesc itemDesc = new TbItemDesc();
+		itemDesc.setItemId(itemId);
+		itemDesc.setItemDesc(desc);
+		itemDesc.setCreated(new Date());
+		itemDesc.setUpdated(new Date());
+		itemDescMapper.insert(itemDesc);
+		return TaotaoResult.ok();
+	}
+	/**
+	 * 添加规格参数
+	 * <p>Title: insertItemParamItem</p>
+	 * <p>Description: </p>
+	 * @param itemId
+	 * @param itemParam
+	 * @return
+	 */
+	private TaotaoResult insertItemParamItem(Long itemId, String itemParam) {
+		//创建一个pojo
+		TbItemParamItem itemParamItem = new TbItemParamItem();
+		itemParamItem.setItemId(itemId);
+		itemParamItem.setParamData(itemParam);
+		itemParamItem.setCreated(new Date());
+		itemParamItem.setUpdated(new Date());
+		//向表中插入数据
+		itemParamItemMapper.insert(itemParamItem);
+		
+		return TaotaoResult.ok();
+		
+	}
+
+	//删除商品
+	@Override
+	public TaotaoResult deleteItem(@RequestParam("ids") long itemId,TbItem item) {
+	    itemMapper.deleteByPrimaryKey(itemId);
+	    return TaotaoResult.ok();
+	}
+
+	
+	/**
+	 * 更新商品
+	 * */
+	 public TaotaoResult updateItem(TbItem item, String desc,Long itemParamId, String itemParams) {
+	        // 强制设置不能更新的字段为null
+	        item.setStatus(null);
+	        item.setCreated(null);
+	        System.out.println(itemParamId);
+	        System.out.println(itemParams);
+	        System.out.println(item.getId());
+	        System.out.println("sadsadsakdska");
+	        TbItem record = new TbItem();
+             record.setPrice(item.getPrice());
+             record.setTitle(item.getTitle());
+             record.setSellPoint(item.getSellPoint());
+             record.setNum(item.getNum());
+             record.setBarcode(item.getBarcode());
+             record.setImage(item.getImage());
+             record.setUpdated(new Date());
+             
+             System.out.println(record);
+             System.out.println(record.getTitle());
+             TbItemExample example3 = new  TbItemExample();
+             com.taotao.pojo.TbItemExample.Criteria criteria3 = example3.createCriteria();
+             criteria3.andIdEqualTo(item.getId());
+             //更新条件
+             this.itemMapper.updateByExampleSelective(record, example3);
+	        TbItemDesc record2 = new TbItemDesc();
+             record2.setItemDesc(desc);
+             record2.setUpdated(new Date());
+             TbItemDescExample example2 = new  TbItemDescExample();
+             com.taotao.pojo.TbItemDescExample.Criteria criteria = example2.createCriteria();
+             criteria.andItemIdEqualTo(item.getId());
+             //更新条件
+             this.itemDescMapper.updateByExampleSelective(record2, example2);
+	        // 更新商品描述数据
+             // 更新商品规格参数数据
+             System.out.println(JsonUtils.objectToJson(itemParams));
+             TbItemParamItem record4 = new TbItemParamItem();
+             record4.setParamData(itemParams);
+             record.setUpdated(new Date());
+             TbItemParamItemExample example5 = new  TbItemParamItemExample();
+             com.taotao.pojo.TbItemParamItemExample.Criteria criteria5 = example5.createCriteria();
+             criteria5.andItemIdEqualTo(item.getId());
+             //更新条件
+        
+             this.itemParamItemMapper.updateByExampleSelective(record4, example5);
+	     
+	 
+	        return TaotaoResult.ok();
+	    }
+	
+}

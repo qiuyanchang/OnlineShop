@@ -1,0 +1,9 @@
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\service\impl\OrderServiceImpl.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\controller\OrderController.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\dao\impl\JedisClientSingle.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\dao\impl\JedisClientCluster.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\dao\OrderDao.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\dao\impl\OrderDaoImpl.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\pojo\Order.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\service\OrderService.java
+F:\taotao\JavaEE18\taotao-order\src\main\java\com\taotao\order\dao\JedisClient.java
